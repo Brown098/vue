@@ -10,5 +10,10 @@
 </template>
 
 <style scoped>
+<<<<<<< HEAD
   @import "tailwindcss";
 </style>
+=======
+
+</style>
+>>>>>>> 67955f9 (main)

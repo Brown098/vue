@@ -8,7 +8,11 @@
         <button @click="goToSysinfo">系统信息</button>
       </div>
       <div>
+<<<<<<< HEAD
         <articeless v-for="item in articles" :key="item.id" :articeles="item" @remove="handleRemove" />
+=======
+        <articeless v-for="item in articlesStore.articles" :key="item.id" :articeles="item" @remove="handleRemove" />
+>>>>>>> 67955f9 (main)
       </div>
     </div>
   </div>
@@ -33,13 +37,21 @@ const goToSysinfo = () => router.push('/sysinfo')
 const articlesStore = useArticlesStore()
 const handleRemove = (id) => {
   articlesStore.removeArticle(id)
+<<<<<<< HEAD
   articles.value = articlesStore.updateArticle()
+=======
+
+>>>>>>> 67955f9 (main)
 }
 
 //加载文章
 onMounted(() => {
   articlesStore.loadArticlesFromStorage()
+<<<<<<< HEAD
   articles.value = articlesStore.articles
+=======
+  
+>>>>>>> 67955f9 (main)
     
 })
 //获取文章列表

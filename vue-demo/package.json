@@ -12,9 +12,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@tailwindcss/vite": "^4.1.18",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.1.18",
+=======
+    "pinia": "^3.0.4",
+>>>>>>> 67955f9 (main)
     "vue": "^3.5.25",
     "vue-router": "^4.6.3"
   },

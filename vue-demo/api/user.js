@@ -9,6 +9,9 @@ export async function getSystemInfo(){
 }
 
 
+<<<<<<< HEAD
 sudo apt remove microsoft-edge-stable
 sudo apt purge microsoft-edge-stable
 sudo apt autoremove
+=======
+>>>>>>> 67955f9 (main)

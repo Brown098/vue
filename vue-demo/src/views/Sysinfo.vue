@@ -1,5 +1,6 @@
 <template>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <div class="container mx-auto px-4 py-6">
     <h1 class="text-2xl font-bold mb-6 text-gray-800">系统监控</h1>
     
@@ -67,31 +68,174 @@
           <tr v-for="(item, index) in systeminfo" :key="index" class="table-row">
             <td class="table-cell">{{ item }}</td>
 >>>>>>> 67955f9 (main)
+=======
+  <div class="monitor">
+    <h1>系统监控</h1>
+
+    <!-- ========== 系统信息 ========== -->
+    <section class="card">
+      <header>
+        <h2>系统信息</h2>
+        <button @click="retryFetch('system')" :disabled="store.SystemInfoListLoading">
+          刷新
+        </button>
+      </header>
+
+      <p v-if="store.SystemInfoListLoading">加载中...</p>
+
+      <p v-else-if="store.SystemInfoListError" class="error">
+        错误：{{ store.SystemInfoListError }}
+      </p>
+
+      <table v-else-if="hasObject(store.SystemInfoList)">
+        <tbody>
+          <tr v-for="(value, key) in store.SystemInfoList" :key="key">
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+>>>>>>> b248ad6 (main)
           </tr>
         </tbody>
       </table>
-    </div>
+
+      <p v-else>暂无系统信息</p>
+    </section>
+
+    <!-- ========== CPU 信息 ========== -->
+    <section class="card">
+      <header>
+        <h2>CPU 信息</h2>
+        <button @click="retryFetch('cpu')" :disabled="store.CpuInfoListLoading">
+          刷新
+        </button>
+      </header>
+
+      <p v-if="store.CpuInfoListLoading">加载中...</p>
+
+      <p v-else-if="store.CpuInfoListError" class="error">
+        错误：{{ store.CpuInfoListError }}
+      </p>
+
+      <table v-else-if="store.CpuInfoList">
+        <tbody>
+          <tr v-for="(value, key) in store.CpuInfoList" :key="key">
+            <td>{{ key }}</td>
+            <td>
+              <template v-if="Array.isArray(value)">
+                <div v-for="(item, i) in value" :key="i">{{ item }}</div>
+              </template>
+              <template v-else-if="isObject(value)">
+                <pre>{{ value }}</pre>
+              </template>
+              <template v-else>
+                {{ value }}
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p v-else>暂无 CPU 信息</p>
+    </section>
+
+    <!-- ========== 内存信息 ========== -->
+    <section class="card">
+      <header>
+        <h2>内存信息</h2>
+        <button @click="retryFetch('memory')" :disabled="store.MemoryInfoListLoading">
+          刷新
+        </button>
+      </header>
+
+      <p v-if="store.MemoryInfoListLoading">加载中...</p>
+
+      <p v-else-if="store.MemoryInfoListError" class="error">
+        错误：{{ store.MemoryInfoListError }}
+      </p>
+
+      <table v-else-if="store.MemoryInfoList">
+        <tbody>
+          <template v-for="(section, sectionKey) in store.MemoryInfoList" :key="sectionKey">
+            <tr>
+              <td colspan="2"><strong>{{ sectionKey }}</strong></td>
+            </tr>
+            <tr v-for="(value, key) in section" :key="sectionKey + key">
+              <td>{{ key }}</td>
+              <td>{{ value }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+
+      <p v-else>暂无内存信息</p>
+    </section>
+
+    <!-- ========== 磁盘信息 ========== -->
+    <section class="card">
+      <header>
+        <h2>磁盘信息</h2>
+        <button @click="retryFetch('disk')" :disabled="store.DiskInfoListLoading">
+          刷新
+        </button>
+      </header>
+
+      <p v-if="store.DiskInfoListLoading">加载中...</p>
+
+      <p v-else-if="store.DiskInfoListError" class="error">
+        错误：{{ store.DiskInfoListError }}
+      </p>
+
+      <div v-else-if="store.DiskInfoList?.disk_info?.length">
+        <div v-for="(disk, index) in store.DiskInfoList.disk_info" :key="index">
+          <table>
+            <tbody>
+              <tr v-for="(value, key) in disk" :key="key">
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr />
+        </div>
+      </div>
+
+      <p v-else>暂无磁盘信息</p>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref,} from "vue";
+import { onMounted } from "vue";
 import { sysinfostore } from "../../stores/user.js";
-const systeminfo = ref([]);
+
 const store = sysinfostore();
 
-const retryFetch = async () => {
-  await store.fetchSystemInfo();
-  systeminfo.value = store.SystemInfoList;
+const retryFetch = async (type) => {
+  const map = {
+    system: store.fetchSystemInfo,
+    cpu: store.fetchCpuInfo,
+    memory: store.fetchMemoryInfo,
+    disk: store.fetchDiskInfo,
+  };
+  await map[type]?.();
 };
 
-onMounted(async() => {
-  await store.fetchSystemInfo();
-  systeminfo.value = store.SystemInfoList;
-})
+const isObject = (val) =>
+  val !== null && typeof val === "object" && !Array.isArray(val);
+
+const hasObject = (val) => isObject(val) && Object.keys(val).length > 0;
+
+onMounted(async () => {
+  await Promise.all([
+    store.fetchSystemInfo(),
+    store.fetchCpuInfo(),
+    store.fetchMemoryInfo(),
+    store.fetchDiskInfo(),
+  ]);
+});
 </script>
 
 <style scoped>
+<<<<<<< HEAD
 .container {
   max-width: 1200px;
 <<<<<<< HEAD
@@ -99,74 +243,36 @@ onMounted(async() => {
   margin: 0 auto;
   padding: 0 16px;
   padding-bottom: 24px;
+=======
+.monitor {
+  padding: 20px;
+>>>>>>> b248ad6 (main)
 }
-
-.page-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-  color: #333;
+.card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 20px;
 }
-
-.loading-container {
+header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 0;
-}
-
-.loading-content {
-  text-align: center;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  margin: 0 auto 8px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  color: #666;
-}
-
-.error-container {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
-  padding: 12px;
-  border-radius: 4px;
-  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
-
-.error-title {
-  font-weight: bold;
-  margin-right: 8px;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
-
-.error-message {
-  flex: 1;
+td {
+  border: 1px solid #ddd;
+  padding: 6px 10px;
 }
-
-.retry-button {
-  margin-left: 8px;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
+.error {
+  color: red;
 }
-
-.empty-container {
-  text-align: center;
-  padding: 48px 0;
+pre {
+  white-space: pre-wrap;
 }
+<<<<<<< HEAD
 
 .empty-text {
   color: #999;
@@ -198,3 +304,6 @@ onMounted(async() => {
 >>>>>>> 67955f9 (main)
 }
 </style>
+=======
+</style>
+>>>>>>> b248ad6 (main)
